@@ -21,6 +21,7 @@ function register() {
   const [loading, setLoading] = useState(false)
 
   const onRegisterClick = async () => {
+    setLoading(true)
     console.log("pencet jalan")
     try {
       const body = {
@@ -38,6 +39,9 @@ function register() {
         console.log(error.response.data)
       }
       alert(error.response.data.message);
+    }
+    finally {
+      setLoading(false)
     }
   };
   
