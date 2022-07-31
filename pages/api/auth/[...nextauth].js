@@ -13,8 +13,9 @@ const credentialInstance = CredentialsProvider({
     const user = res.data.data.result;
     return user;
     } catch (error) {
-        console.log(error.response.data)
-        throw error.reponse.data;
+        console.log(`yang ini boy ${error.response.data.message}`)
+        throw error.response.data;
+        
     }
   },
 });

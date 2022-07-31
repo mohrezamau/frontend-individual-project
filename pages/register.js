@@ -22,7 +22,6 @@ function register() {
 
   const onRegisterClick = async () => {
     setLoading(true)
-    console.log("pencet jalan")
     try {
       const body = {
         username,

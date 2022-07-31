@@ -31,18 +31,28 @@ function login() {
 
 
   const onLoginClick = async () => {
-    const res = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-    console.log(res)
-    if (!res.error) {
-      router.replace("/");
-    } else {
-      alert(res.error);
-      console.log({ error: res.error });
-    }
+    // try {
+      const res = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+      //console.log(res)
+      if (!res.error) {
+        router.replace("/");
+      } 
+      else {
+        console.log(res.error)
+        alert(res.error);
+        // console.log({ error: res.error });
+      }
+    // } catch (error) {
+    //   console.log(error)
+    //   if(error.response.data.message){
+    //     console.log(error.response.data.message)
+    //   }
+    //   alert(error.response.data.message);
+    // }
   };
 
 
