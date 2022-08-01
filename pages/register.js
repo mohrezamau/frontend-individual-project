@@ -34,7 +34,7 @@ function register() {
       
     } catch (error) {
       console.log(error)
-      alert(error.response.data.message);
+      alert(error);
     }
     finally {
       setLoading(false)
