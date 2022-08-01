@@ -37,7 +37,7 @@ function login() {
         email,
         password,
       });
-      //console.log(res)
+      console.log(res)
       if (!res.error) {
         router.replace("/");
       } 

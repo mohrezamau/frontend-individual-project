@@ -34,9 +34,6 @@ function register() {
       
     } catch (error) {
       console.log(error)
-      if(error.response.data.message){
-        console.log(error.response.data)
-      }
       alert(error.response.data.message);
     }
     finally {
