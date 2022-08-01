@@ -70,7 +70,6 @@ export default function Home() {
   function postMaker (post) {
   
     return (
-      
         <Box as='button'
         maxW={300} maxH={300} borderWidth='1px' borderRadius='lg' overflow='hidden' my={6} mx={12}>
       <Image src={post.imageUrl} width={480} height={320}/>
@@ -94,8 +93,6 @@ export default function Home() {
         </Box>
       </Box>
     </Box>
-   
-
     )
   }
 
