@@ -19,17 +19,18 @@ export default function Home() {
   const [caption, setCaption] = useState("")
   const [image, setImage] = useState()
   const [preview, setPreview] = useState()
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  function imagePreview () {
-    if (preview){
-      return (
-        <Box mt={3} px={50} py={25} bg={'gray.100'} width={"85%"} rounded={8}>
-        <Image src={preview} width={480} height={320}/>
-      </Box>     
-    )
-    } 
-  }
+  // function imagePreview () {
+  //   if (preview){
+  //     return (
+  //       <Box mt={3} px={50} py={25} bg={'gray.100'} width={"85%"} rounded={8}>
+  //       <Image src={preview} width={480} height={320}/>
+  //     </Box>     
+  //   )
+  //   } 
+  // }
 
   const testPosts = [{
     imageUrl: pepega,
@@ -113,6 +114,18 @@ export default function Home() {
       setImage(event.target.files[0]);
       setPreview(URL.createObjectURL(event.target.files[0]));
     };
+
+    const onPostClick = async () => {
+      setLoading(true)
+      try {
+        const body = {
+          caption, image, user_id
+        }
+
+      } catch (error) {
+        
+      }
+    }
 
   return (
     <VStack spacing='24px'>

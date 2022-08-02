@@ -34,16 +34,16 @@ const [session, setSession] = useState(false)
             HOME
           </Button>
         </NextLink>
-        <NextLink href="/login">
+        {session? (<></>):(<NextLink href="/login">
         <Button  fontSize="large" colorScheme="teal" variant="ghost" mx="2.5px" my={5} w="100%">
                   Login
                 </Button>
-        </NextLink>
-        <NextLink href="/register">
+        </NextLink>)}
+        {session? (<></>):(<NextLink href="/register">
                 <Button  fontSize="large" colorScheme="teal" variant="ghost" mx="2.5px" my={5} w="100%">
                   Register
                 </Button>
-        </NextLink>
+        </NextLink>)}
         <NextLink href="/info">
                 <Link mx="8px" my="27.5px">
                   <InfoOutlineIcon/>
