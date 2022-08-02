@@ -1,17 +1,18 @@
 import React from 'react'
-import { Button, Flex, Heading, Input, Box, Image, Text, Link, Alert,
+import { Button, Flex, Heading, Input, Box, Text, Link, Alert,
   AlertIcon,
   AlertTitle,
   AlertDescription, Tooltip} from "@chakra-ui/react";
+import Image from 'next/image';
 import { useState } from 'react';
 import axiosInstance from '../services/axiosinstance';
 import { passwordStrength } from 'check-password-strength'
 import { useRouter } from 'next/router';
-
+import pepega from "../public/images/pepega.jpg"
+import sadge from "../public/images/sadge.png"
 
 function register() {
-  const image1 = {imageUrl: "https://streamsentials.com/wp-content/uploads/2021/07/sadge-png.png"}
-  const image2 = {imageUrl: "https://i1.sndcdn.com/avatars-6bWjcsxTOxTkVGlb-j4IcAg-t500x500.jpg"}
+  const images = [sadge, pepega]
 
 
   const [username, setUsername] = useState("")
@@ -37,7 +38,7 @@ function register() {
       
     } catch (error) {
       console.log(error)
-      alert(error);
+      alert(error.response.data.message);
     }
     finally {
       setLoading(false)
@@ -137,14 +138,14 @@ function register() {
 
 
   return (
-    <Flex height="85vh" alignItems="center" justifyContent="center" gap="150px" mx="10px">
+    <Flex height="85vh" alignItems="center" justifyContent="center" gap="100px" mx="10px">
       <Flex direction="column" p={12} rounded={6}>
-        <Box height="60vh" width="70vh" maxW={'sm'}>
-          {!success? (<Image src={image1.imageUrl}></Image>):(<Image src={image2.imageUrl}></Image>)}
+        <Box height="80vh" width="sm" maxW={'sm'} alignItems="center" justifyContent="center">
+          {!success? (<Image src={images[0]} height={300} width={300}></Image>):(<Image src={images[1]}></Image>)}
         </Box>
       </Flex>
       <Flex direction="column" p={10} rounded={6} height="80vh" width="75vh" alignItems={"center"}>
-        {!success? (<Heading mb={5}>Sign up for Yggdrasil!</Heading>):("")}
+        {!success? (<Heading mb={5}>Sign up for Pepetalk!</Heading>):("")}
         {!success? (<><Input
           type="text"
           value={username}
