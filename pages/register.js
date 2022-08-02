@@ -6,11 +6,12 @@ import { Button, Flex, Heading, Input, Box, Image, Text, Link, Alert,
 import { useState } from 'react';
 import axiosInstance from '../services/axiosinstance';
 import { passwordStrength } from 'check-password-strength'
+import { useRouter } from 'next/router';
 
 
 function register() {
-  const image = {imageUrl: "https://streamsentials.com/wp-content/uploads/2021/07/sadge-png.png"}
-
+  const image1 = {imageUrl: "https://streamsentials.com/wp-content/uploads/2021/07/sadge-png.png"}
+  const image2 = {imageUrl: "https://i1.sndcdn.com/avatars-6bWjcsxTOxTkVGlb-j4IcAg-t500x500.jpg"}
 
 
   const [username, setUsername] = useState("")
@@ -19,8 +20,10 @@ function register() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
 
   const onRegisterClick = async () => {
+   
     setLoading(true)
     try {
       const body = {
@@ -29,7 +32,7 @@ function register() {
         password,
       };
       
-      const res = await axiosInstance.post("/users", body);
+      const res = await axiosInstance.post("/users/register", body);
       setSuccess(true)
       
     } catch (error) {
@@ -137,12 +140,12 @@ function register() {
     <Flex height="85vh" alignItems="center" justifyContent="center" gap="150px" mx="10px">
       <Flex direction="column" p={12} rounded={6}>
         <Box height="60vh" width="70vh" maxW={'sm'}>
-          <Image src={image.imageUrl}></Image>
+          {!success? (<Image src={image1.imageUrl}></Image>):(<Image src={image2.imageUrl}></Image>)}
         </Box>
       </Flex>
       <Flex direction="column" p={10} rounded={6} height="80vh" width="75vh" alignItems={"center"}>
-        <Heading mb={5}>Sign up for Yggdrasil!</Heading>
-        <Input
+        {!success? (<Heading mb={5}>Sign up for Yggdrasil!</Heading>):("")}
+        {!success? (<><Input
           type="text"
           value={username}
           placeholder="username"
@@ -173,16 +176,23 @@ function register() {
           variant="filled"
           mb={6}
           onChange={(event) => setConfirmPassword(event.target.value)}
-        />
+        /></>):(<>
+        <Flex alignItems="center" justifyContent="center" 
+    direction="column" background="gray.400" p={12} rounded={6}>
+      <Heading mb={6}>Registration success, we have sent you a verification email!</Heading>
+        <Text mb={3}> If you did not get an email, you can resend with the button below</Text>
+      <Button colorScheme="teal" width={"150px"} 
+      // onClick={onResendClick} 
+      >
+        Resend Email
+      </Button>
+      <Text mt={3}>proceed to <Link color="teal" href="/login">login!</Link></Text>
+    </Flex></>)}
        
-        <Text mt={5} mb={5}>
-          Already have an account?, you can sign in <Link color="teal" href="/login">here!</Link></Text>
-       
-          {success? (<Alert status='success' rounded={6}>
-          <AlertIcon />
-          Successfully registered a new account! 
-        </Alert>): ("")}
-        {okChecker()}
+        {!success? (<Text mt={5} mb={5}>
+          Already have an account?, you can sign in <Link color="teal" href="/login">here!</Link>
+          </Text>):("")}
+        {!success? (<>{okChecker()}</>):("")}
       </Flex>
     </Flex>
   );

@@ -84,7 +84,7 @@ function login() {
     <Flex height="60vh" alignItems="center" justifyContent="center" >
       <Flex alignItems="center" justifyContent="center" 
       direction="column" background="gray.400" p={12} rounded={6}>
-        <Heading mb={6}>Welcome to Yggdrasil!</Heading>
+        <Heading mb={6}>Welcome to Pepetalk!</Heading>
         <Input
           
           type="text"
