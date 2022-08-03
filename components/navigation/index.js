@@ -52,6 +52,11 @@ const [session, setSession] = useState(false)
        {session? (<Button  fontSize="large" variant="ghost" mx="2.5px" my={5} w="100%" onClick={() => {signOut();}}>
                   Logout <ExternalLinkIcon/>
                 </Button>): ("")}
+                {session? (<NextLink href="/profile">
+          <Button fontSize="large" variant="ghost" colorScheme="orange" mx="2.5px" my={5} w="100%">
+            PROFILE
+          </Button>
+        </NextLink>):(<></>)}
         </Flex>
       </HStack>
         </Box>

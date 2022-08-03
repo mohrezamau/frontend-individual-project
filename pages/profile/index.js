@@ -1,10 +1,11 @@
 import React from 'react'
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../../services/axiosinstance';
-import {Image, Text, VStack, Flex, Button, useDisclosure, Box, Drawer, Modal, ModalContent, ModalHeader
-,ModalCloseButton, ModalFooter, ModalOverlay, ModalBody, Input, Tag, TagLeftIcon, TagLabel, Heading} from "@chakra-ui/react";
+import {Image, Text, Flex, Button, useDisclosure, Tag, TagLeftIcon, TagLabel, Heading} from "@chakra-ui/react";
 import { useState } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
+// import editProfile from '../../components/edit-profile';
+import NextLink from "next/link";
 
 function profile(props) {
     const { isOpen, onOpen, onClose } = useDisclosure()
@@ -15,29 +16,48 @@ function profile(props) {
     const {
         user_id,
         username,
-        bio,
+         bio,
         isVerified,
-        fullname,
+         fullname,
         email,
         
       } = user;
 
-      console.log(`ini user ${user.username}`)
-    
+      const userProfile = {
+        user_id,
+        isVerified,
+        username,
+        bio,
+        fullname,
+        email
+      };
+
+    const userVerified = userProfile.isVerified;
+    if (userVerified) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("userVerified", true);
+    }
+    }
+
+    const userID = userProfile.user_id;
+    if (userID) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("user_id", userID);
+    }
+    }
+
+      console.log(`ini user ${props.user.username}`)
+
  const onFileChange = (event) => {
     setAvatar(event.target.files[0]);
      setPreview(URL.createObjectURL(event.target.files[0]));
   };
 
-  const onHandleChange = (e) => {
-    setUser({...user, [e.target.name]: e.target.value});
-  };
-
   const onSaveAvatar = async () => {
     try {
       const session = await getSession();
-
-      const {accessToken} = session.user;
+      
+      const {accessToken} = session.props.user;
 
       const body = new FormData();
 
@@ -59,13 +79,12 @@ function profile(props) {
   const onSaveProfile = async () => {
     try {
       const session = await getSession();
-
       const {accessToken} = session.user;
 
       const config = {
         headers: {Authorization: `Bearer ${accessToken}`},
       };
-      console.log(user)
+      console.log({bio}, {fullname})
       await axiosInstance.patch("/users", user, config);
 
       alert("Update Profile Success");
@@ -88,10 +107,9 @@ function profile(props) {
         <Image width={300} height={300} value={avatar}></Image>
     </Flex>
     </Flex>
-    
       <Flex alignItems="center" justifyContent="center" direction={"column"}>
       <Flex mb={3} alignItems="center" justifyContent="center" direction={"column"}>
-      {preview? (<><Button mx={3} colorScheme="orange" alignItems="center" width="10vh"
+      {/* {preview? (<><Button mx={3} colorScheme="orange" alignItems="center" width="10vh"
       onClick={() =>{ setPreview(null), setAvatar(null)}}>Cancel</Button>
       <Button mx={3} colorScheme="teal" alignItems="center" width="10vh"
       onClick={onSaveAvatar}>Save Avatar</Button></>
@@ -104,7 +122,7 @@ function profile(props) {
     </Tag></label>
     <input id="inputImage" style={{visibility: 'hidden'}} type={"file"} value={avatar}
     onChange={onFileChange}/>
-    </>)}
+    </>)} */}
       <Flex alignItems="center" justifyContent="center" 
       direction="column" background="gray.400" p={12} rounded={6}>
         <Heading mb={6}>this is {username}!</Heading>
@@ -115,45 +133,20 @@ function profile(props) {
       </Flex>
     </Flex>
       <>
-      <Button onClick={onOpen}>Edit Profile</Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit Profile</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-          <><Input
-          type="text"
-          value={fullname}
-          placeholder="fullname"
-          variant="filled"
-          mb={3}
-          onChange={onHandleChange}
-        />
-        <Input
-          type="text"
-          value={bio}
-          placeholder="bio"
-          variant="filled"
-          mb={3}
-          onChange={onHandleChange}
-        />
-        
-       </>
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='orange' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button colorScheme='teal' onClick={onSaveProfile}>Save</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <NextLink href="/profile/editprofile">
+      <Button       colorScheme="teal"
+                    variant={"solid"}
+                    onClick={onOpen}
+                    size="sm"
+                    width={100}
+                    alignSelf="center"
+                  >
+                    Edit Profile
+                  </Button>
+      </NextLink>
     </>
       </Flex>
     </Flex>  )
-// return (<></>)
 }
 
 export async function getServerSideProps(context) {
