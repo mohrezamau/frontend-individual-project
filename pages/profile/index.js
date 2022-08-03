@@ -19,6 +19,7 @@ function profile(props) {
         isVerified,
         fullname,
         email,
+        
       } = user;
 
       console.log(`ini user ${user.username}`)
@@ -32,7 +33,7 @@ function profile(props) {
     setUser({...user, [e.target.name]: e.target.value});
   };
 
-  const onSaveButton = async () => {
+  const onSaveAvatar = async () => {
     try {
       const session = await getSession();
 
@@ -55,7 +56,30 @@ function profile(props) {
     }
   };
 
+  const onSaveProfile = async () => {
+    try {
+      const session = await getSession();
 
+      const {accessToken} = session.user;
+
+      const config = {
+        headers: {Authorization: `Bearer ${accessToken}`},
+      };
+      console.log(user)
+      await axiosInstance.patch("/users", user, config);
+
+      alert("Update Profile Success");
+      const resGetUserProfile = await axiosInstance.get(
+        `/users/profile/${user_id}`,
+        config
+      );
+
+      setUser(resGetUserProfile.data.data.result);
+    } catch (error) {
+      console.log({error});
+      alert(error);
+    }
+  };
 
   return (
 <Flex height="60vh" alignItems="center" justifyContent="center" bg={"gray.300"} rounded={6}>
@@ -67,11 +91,11 @@ function profile(props) {
     
       <Flex alignItems="center" justifyContent="center" direction={"column"}>
       <Flex mb={3} alignItems="center" justifyContent="center" direction={"column"}>
-      {preview? (<><Button mx={3} colorScheme="orange" alignItems="center" width="10vh"onClick={() =>{ setPreview(null), setAvatar(null)}}>Cancel</Button>
-      <Button mx={3} colorScheme="teal" alignItems="center" width="10vh">Save</Button></>
-      )
-      
-      :(<>
+      {preview? (<><Button mx={3} colorScheme="orange" alignItems="center" width="10vh"
+      onClick={() =>{ setPreview(null), setAvatar(null)}}>Cancel</Button>
+      <Button mx={3} colorScheme="teal" alignItems="center" width="10vh"
+      onClick={onSaveAvatar}>Save Avatar</Button></>
+      ):(<>
       <label for="inputImage"> <Tag variant='subtle' colorScheme='cyan'>
       <TagLeftIcon  boxSize={"12px"} as={AddIcon} />
       <TagLabel>
@@ -122,7 +146,7 @@ function profile(props) {
             <Button colorScheme='orange' mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button colorScheme='teal'>Save</Button>
+            <Button colorScheme='teal' onClick={onSaveProfile}>Save</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
