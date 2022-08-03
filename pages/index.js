@@ -21,7 +21,7 @@ export default function Home() {
   const [preview, setPreview] = useState()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
+  
   // function imagePreview () {
   //   if (preview){
   //     return (

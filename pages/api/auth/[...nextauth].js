@@ -8,10 +8,11 @@ const credentialInstance = CredentialsProvider({
         const { email, password } = credentials;
 
     const res = await axiosInstance.post("/users/login", { email, password });
-    console.log(res)
-
+    
+    console.log({res: res.data.data})
     const user = res.data.data.result;
-    return user;
+
+    return user; // { user_id : 90, accesstoken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2NTk1MDg2Nzd9.VFmHxjOPtJC1lI3cO8EYsD7mtKlMWGQy8Dd-Htbdtx8'}
     } catch (error) {
         console.log(`yang ini boy ${error.response.data.message}`)
         throw error.response.data;

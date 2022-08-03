@@ -21,6 +21,7 @@ function register() {
   const [confirmPassword, setConfirmPassword] = useState("")
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
   const router = useRouter()
 
   const onRegisterClick = async () => {
@@ -45,6 +46,22 @@ function register() {
     }
   };
   
+  const onResendClick = async () => {
+    try {
+      const body = {
+        username,
+        email,
+        password,
+      };
+      
+      const res = await axiosInstance.post("/users/resend", body)
+      setSent(true)
+    } catch (error) {
+      console.log(error)
+      alert(error.response.data.message);
+    }
+  }
+
   function okChecker () {
       if (!password) return (
         <Alert status='info' rounded={6}>
@@ -183,12 +200,15 @@ function register() {
       <Heading mb={6}>Registration success, we have sent you a verification email!</Heading>
         <Text mb={3}> If you did not get an email, you can resend with the button below</Text>
       <Button colorScheme="teal" width={"150px"} 
-      // onClick={onResendClick} 
+      onClick={onResendClick} 
       >
         Resend Email
       </Button>
       <Text mt={3}>proceed to <Link color="teal" href="/login">login!</Link></Text>
-    </Flex></>)}
+    </Flex>{sent?(<Alert status='success' rounded={6}>
+      <AlertIcon />
+      new verification email sent!
+    </Alert>):("")}</>)}
        
         {!success? (<Text mt={5} mb={5}>
           Already have an account?, you can sign in <Link color="teal" href="/login">here!</Link>
