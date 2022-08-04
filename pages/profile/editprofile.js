@@ -8,12 +8,25 @@ import axiosInstance from '../../services/axiosinstance';
 import sadge from "../../public/images/pepega.jpg"
 import pepega from "../../public/images/pepega.jpg"
 
-function editprofile() {
+function editprofile(props) {
     const [preview, setPreview] = useState(false)
     const [avatar, setAvatar] = useState("")
+    const [bio, setBio] = useState("")
+    const [fullname, setFullname] = useState("")
+    
     console.log(avatar)
 
+    const {
+      user_id,
+      username,
+      isVerified,
+      email,
+    } = props.user;
+  
+
     const onFileChange = (event) => {
+      const targetAvatar = event.target.files[0]
+      console.log(`ini avatar ${targetAvatar}`)
         setAvatar(event.target.files[0]);
          setPreview(URL.createObjectURL(event.target.files[0]));
       };
@@ -21,43 +34,48 @@ function editprofile() {
       const onSaveAvatar = async () => {
         try {
           const session = await getSession();
-          
-          const {accessToken} = session.props.user;
+
+          const {accesstoken} = session.user;
     
           const body = new FormData();
     
           body.append("avatar", avatar);
     
           const config = {
-            headers: {Authorization: `Bearer ${accessToken}`},
+            headers: {Authorization: `Bearer ${accesstoken}`},
           };
     
           const res = await axiosInstance.patch("/users/avatar", body, config);
     
           alert(res.data.message);
         } catch (error) {
-          console.log({Error});
-          alert(error.response.data.message);
+          console.log(error);
+          alert(error);
         }
       };
       const onSaveProfile = async () => {
         try {
           const session = await getSession();
-          const {accessToken} = session.user;
+
+          const {accesstoken} = session.user;
+
+          const body = {
+            bio, fullname
+          }
     
           const config = {
-            headers: {Authorization: `Bearer ${accessToken}`},
+            headers: {Authorization: `Bearer ${accesstoken}`},
           };
-          console.log({bio}, {fullname})
-          await axiosInstance.patch("/users", user, config);
+          console.log({bio}, {fullname}, {body})
+          const res = await axiosInstance.patch("/users", body, config);
+          alert(res.data.message)
+          // const resGetUserProfile = await axiosInstance.get(
+          //   `/users/profile/${user_id}`,
+          //   config
+          // );
     
-          alert("Update Profile Success");
-          const resGetUserProfile = await axiosInstance.get(
-            `/users/profile/${user_id}`,
-            config
-          );
-    
-          setUser(resGetUserProfile.data.data.result);
+          // setBio(resGetUserProfile.data.data.result.bio);
+          // setFullname(resGetUserProfile.data.data.result.fullname)
         } catch (error) {
           console.log({error});
           alert(error);
@@ -66,36 +84,40 @@ function editprofile() {
     
 
   return (
-    <Flex height="60vh" alignItems="center" justifyContent="center" bg={"gray.700"} >
+    <Flex height="60vh" alignItems="center" justifyContent="center" >
     <Flex alignItems="center" justifyContent="center" 
     direction="column" background="gray.400" p={12} rounded={6}>
       <Text fontSize={"xl"} fontWeight={"semibold"} mb={6}>Edit Profile</Text>
       <Input
         type="text"
+        value={fullname}
         placeholder="fullname"
         variant="filled"
-        mb={3}  
+        mb={3}
+        onChange={(event) => setFullname(event.target.value)}  
       />
       <Input
         type="text"
+        value={bio}
         placeholder="bio"
         variant="filled"
-        mb={3}  
+        mb={3}
+        onChange={(event) => setBio(event.target.value)}  
       />
 
-      <Button mb={3} colorScheme="teal" width={"70px"} height={"30px"}
-      //onClick={onSaveProfile}
+      <Button mb={3} colorScheme="teal" width={"100%"} height={"30px"}
+      onClick={onSaveProfile}
       >
         save
       </Button>
-      {preview? (<><Button mx={3} mb={2} colorScheme="orange" alignItems="center" width="10vh"
+      {preview? (<><Button mx={3} mb={2} colorScheme="orange" alignItems="center" width="100%"
       onClick={() =>{ setPreview(null), setAvatar("")}}>Cancel</Button>
-      <Button mx={3} colorScheme="teal" alignItems="center" width="15vh"
-      //onClick={onSaveAvatar}
+      <Button mx={3} colorScheme="teal" alignItems="center" width="100%"
+      onClick={onSaveAvatar}
       >
         Save Avatar</Button></>
       ):(<>
-      <label for="inputImage"> <Tag variant='subtle' colorScheme='teal'>
+      <label for="inputImage"> <Tag variant='subtle' colorScheme='teal' width={"100%"}>
       <TagLeftIcon  boxSize={"12px"} as={AddIcon} />
       <TagLabel>
         Add Avatar
@@ -106,8 +128,8 @@ function editprofile() {
     </>)}
     </Flex>
     <Flex alignItems="center" justifyContent="center" 
-     bg={"red.300"} maxW={320} maxH={320} ml={10} rounded={6}>
-        <Image width={320} height={320} src={avatar}></Image>
+     bg={"gray.100"} maxW={320} maxH={320} ml={10} rounded={6}>
+        <Image width={320} height={320} src={preview}></Image>
     </Flex>
   </Flex>
   )
