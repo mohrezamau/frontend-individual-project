@@ -56,33 +56,33 @@ console.log(addressAvatar)
 
 
 return (
-<Flex width={"100%"} height="60vh" alignItems="center" justifyContent="center" bg={"gray.300"} rounded={6}>
+<Flex width={"100%"} height="60vh" alignItems="center" justifyContent="center" rounded={6}>
 <Flex bg={"gray.200"} width={320} height={320} mr={10} rounded={6}>
-    <Flex width={300} height={300} bg={"grey.100"} my={2} mx={2}>
+    <Flex maxW={500} maxH={500} height={300} bg={"grey.100"} my={2} mx={2}>
         <Image width={300} height={300} src={addressAvatar}></Image>
     </Flex>
     </Flex>
       <Flex alignItems="center" justifyContent="center" direction={"column"}>
       <Flex mb={3} alignItems="center" justifyContent="center" direction={"column"}>
      
-      <Flex alignItems="center" justifyContent="center" 
-      direction="column" background="gray.400" p={12} rounded={6}>
-        <Heading mb={6}>this is {username}!</Heading>
-        <Text textAlign={"left"}>fullname: {fullname}</Text>
-        <Text>email: {email}</Text>
-        <Text>username: {username}</Text>
-        <Text>bio: {bio}</Text>
+      <Flex alignItems="left" justifyContent="center" fontWeight={"semibold"}
+      direction="column" background="gray.400" p={14} rounded={6}>
+        <Heading mb={6}>This is {username}!</Heading>
+        <Text >Full Name: {fullname}</Text>
+        <Text >E-Mail Address: {email}</Text>
+        <Text >Username: {username}</Text>
+        <Text >Bio: {bio}</Text>
       </Flex>
     </Flex>
       <>
       <NextLink href="/profile/editprofile">
       <Button       colorScheme="teal"
-                    variant={"solid"}
+                    variant={"outline"}
                     onClick={onOpen}
                     size="sm"
                     width={100}
                     alignSelf="center"
-                  >
+                                      >
                     Edit Profile
                   </Button>
       </NextLink>

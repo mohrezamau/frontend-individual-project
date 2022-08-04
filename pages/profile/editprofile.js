@@ -108,12 +108,12 @@ function editprofile(props) {
       <Button mb={3} colorScheme="teal" width={"100%"} height={"30px"}
       onClick={onSaveProfile}
       >
-        save
+        Save Profile
       </Button>
       {preview? (<><Button mx={3} mb={2} colorScheme="orange" alignItems="center" width="100%"
-      onClick={() =>{ setPreview(null), setAvatar("")}}>Cancel</Button>
+      onClick={() =>{ setPreview(null), setAvatar("")}} variant="outline">Cancel</Button>
       <Button mx={3} colorScheme="teal" alignItems="center" width="100%"
-      onClick={onSaveAvatar}
+      onClick={onSaveAvatar} variant="outline"
       >
         Save Avatar</Button></>
       ):(<>

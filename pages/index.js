@@ -13,67 +13,68 @@ import sadge from '../public/images/sadge.png'
 import gutsgrin from '../public/images/gutsgrin.jpg'
 import geekcat from '../public/images/geekcat.png'
 import panelberserk from '../public/images/panelberserk.jpg'
+import axiosInstance from '../services/axiosinstance'
+import next from 'next'
+
 
 export default function Home() {
 
+  const [isLiked, setIsLiked] = useState("false")
   const [caption, setCaption] = useState("")
   const [image, setImage] = useState()
   const [preview, setPreview] = useState()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-  
-  // function imagePreview () {
-  //   if (preview){
-  //     return (
-  //       <Box mt={3} px={50} py={25} bg={'gray.100'} width={"85%"} rounded={8}>
-  //       <Image src={preview} width={480} height={320}/>
-  //     </Box>     
-  //   )
-  //   } 
-  // }
+
 
   const testPosts = [{
+    post_id: 1,
     imageUrl: pepega,
     title: 'Ini pepega',
     likeCount: 4,
-    rating: true,
+    isLiked: true,
   }, {
+    post_id: 2,
     imageUrl: coolpepe,
     title: 'Ini coolpepe',
     likeCount: 9,
-    rating: true,
+    isLiked: true,
   }, {
+    post_id: 3,
     imageUrl: sadge,
     title: 'Ini sadge',
     likeCount: 34,
-    rating: true,
+    isLiked: false,
   },
   {
+    post_id: 4,
     imageUrl: gutsgrin,
     title: 'Ini guts tolong dikondisikan kerennya, best manga ever boi YAGESYAK anjas kelas',
     likeCount: 999,
-    rating: true,
+    isLiked: true,
   }
   , {
+    post_id: 5,
     imageUrl: geekcat,
     title: 'Ini meng',
     likeCount: 34,
-    rating: true,
+    isLiked: true,
   },
   {
+    post_id: 6,
     imageUrl: panelberserk,
     title: 'Ini berserk',
     likeCount: 999,
-    rating: true,
+    isLiked: true,
   }
   ,]
 
   function postMaker (post) {
   
     return (
-        <Box as='button'
-        maxW={300} maxH={300} borderWidth='1px' borderRadius='lg' overflow='hidden' my={6} mx={12}>
-      <Image src={post.imageUrl} width={480} height={320}/>
+        <Box as='button' bg={"gray.100"}
+        maxW={1500} maxH={1200} borderWidth='1px' borderRadius='lg' overflow='hidden' my={6} mx={12}>
+      <Image src={post.imageUrl} width={480} height={320} borderWidth='1px' borderRadius='lg' overflow='hidden'/>
 
       <Box p='3'>
         <Box
@@ -86,7 +87,7 @@ export default function Home() {
 
         <Box display='flex' mt='2' alignItems='center'>
         <StarIcon
-                color={post.rating ? 'orange' : 'gray.300'}
+                color={post.isLiked ? 'orange' : 'gray.300'}
               />
           <Box as='span' ml='2' color='gray.600' fontSize='sm'>
             {post.likeCount}
@@ -118,12 +119,27 @@ export default function Home() {
     const onPostClick = async () => {
       setLoading(true)
       try {
-        const body = {
-          caption, image, user_id
-        }
+        const session = await getSession();
+
+        const {accesstoken} = session.user;
+        console.log(session)
+        const body = new FormData();
+        body.append("image", image);
+        body.append("caption", caption);
+        body.append("user_id", session.user.user_id);
+        // const body = {
+        //   caption, image, user_id: session.user.user_id
+        // }
+        const config = {
+          headers: {Authorization: `Bearer ${accesstoken}`},
+        };
+        console.log({body})
+          const res = await axiosInstance.post("/posts", body, config);
+          alert(res.data.message)
 
       } catch (error) {
-        
+        alert(error)
+        console.log(error)
       }
     }
 
@@ -131,29 +147,58 @@ export default function Home() {
     <VStack spacing='24px'>
       <Box  
     maxH="10vh" width= "80%" align-items="center" my="auto" mx="auto" padding={"auto"} rounded={8}>
-     <Input type="text" width={"90%"}
+     <Input type="text" width={"100%"}
           placeholder="What's going on?"
           variant="outline"
           mb="10px"
-          bg="gray.400"
+          bg="gray.50"
           value={caption}
           onChange={(event) => setCaption(event.target.value)}/>
-          <Button mx={3} colorScheme="teal" alignItems="center" width="10vh">Post</Button>
+
+          <Button mx={3} 
+          variant={"outline"} colorScheme="teal" alignItems="center" width="20vh" 
+          onClick={onPostClick}>
+            Pepe Post!</Button>
           
-    {preview? (<Button mx={3} colorScheme="orange" alignItems="center" width="20vh"onClick={() =>{ setPreview(null), setImage(null)}}>remove image</Button>):(<>
-      <label for="inputImage"> <Tag variant='subtle' colorScheme='cyan'>
+    {preview? (<Button mx={3} colorScheme="orange" alignItems="center" width="20vh" onClick={() =>{ setPreview(null), setImage(null)}}>remove image</Button>):(<>
+      <label for="inputImage"> <Tag variant='outline' colorScheme='teal'>
       <TagLeftIcon  boxSize={"12px"} as={AddIcon} />
       <TagLabel>
         Add Image
       </TagLabel>
     </Tag></label>
-    <input id="inputImage" style={{visibility: 'hidden'}} type={"file"}
+    <input id="inputImage" style={{visibility: 'hidden'}} type={"file"} value={image}
     onChange={onImageChange}/>
     </>)} 
    </Box >
-      <Flex wrap={"wrap"} align='center'>
+      <Flex wrap={"wrap"} direction={"column"} align='center'>
       {mappedPosts}
       </Flex>
     </VStack>
   )
+}
+
+export async function getServerSideProps(context) {
+  try {
+    const session = await getSession({req: context.req});
+
+    if (!session) return {redirect: {destination: "/login"}};
+      console.log({session})
+    const {accessToken} = session.user;
+
+    const config = {
+      headers: {Authorization: `Bearer ${accessToken}`},
+    };
+
+    const user_id = session.user.user_id;
+    console.log({user_id})
+    const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
+    
+    return {
+      props: {user: res.data.data.result, session},
+    };
+  } catch (error) {
+    console.log({error});
+    return {props: {}};
+  }
 }

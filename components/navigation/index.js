@@ -44,19 +44,19 @@ const [session, setSession] = useState(false)
                   Register
                 </Button>
         </NextLink>)}
-        <NextLink href="/info">
-                <Link mx="8px" my="27.5px">
-                  <InfoOutlineIcon/>
-                </Link>
-        </NextLink>
         {session? (<NextLink href="/profile">
           <Button fontSize="large" variant="ghost" colorScheme="orange" mx="2.5px" my={5} w="100%">
             PROFILE
           </Button>
         </NextLink>):(<></>)}        
-       {session? (<Button  fontSize="large" variant="ghost" mx="2.5px" my={5} w="100%" onClick={() => {signOut();}}>
-                  Logout <ExternalLinkIcon/>
+       {session? (<Button colorScheme={"teal"} fontSize="large" variant="ghost" mx="2.5px" my={5} w="100%" onClick={() => {signOut();}}>
+                  LOGOUT <ExternalLinkIcon/>
                 </Button>): ("")}
+                <NextLink href="/info">
+                <Link mx="8px" my="27.5px">
+                  <InfoOutlineIcon/>
+                </Link>
+        </NextLink>
                 
         </Flex>
       </HStack>
