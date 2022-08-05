@@ -25,6 +25,8 @@ export default function Home() {
   const [preview, setPreview] = useState()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  console.log(`ini caption ${caption}`)
+  console.log(`ini image ${image}`)
 
 
   const testPosts = [{
@@ -123,17 +125,18 @@ export default function Home() {
 
         const {accesstoken} = session.user;
         console.log(session)
+        const user_id = session.user.user_id;
         const body = new FormData();
         body.append("image", image);
         body.append("caption", caption);
-        body.append("user_id", session.user.user_id);
+        body.append("user_id", user_id);
         // const body = {
         //   caption, image, user_id: session.user.user_id
         // }
         const config = {
           headers: {Authorization: `Bearer ${accesstoken}`},
         };
-        console.log({body})
+        console.log(image, caption, user_id)
           const res = await axiosInstance.post("/posts", body, config);
           alert(res.data.message)
 
@@ -160,7 +163,7 @@ export default function Home() {
           onClick={onPostClick}>
             Pepe Post!</Button>
           
-    {preview? (<Button mx={3} colorScheme="orange" alignItems="center" width="20vh" onClick={() =>{ setPreview(null), setImage(null)}}>remove image</Button>):(<>
+    {preview? (<Button mx={3} colorScheme="orange" alignItems="center" width="22vh" onClick={() =>{ setPreview(null), setImage(null)}}>Remove Image</Button>):(<>
       <label for="inputImage"> <Tag variant='outline' colorScheme='teal'>
       <TagLeftIcon  boxSize={"12px"} as={AddIcon} />
       <TagLabel>

@@ -1,16 +1,19 @@
 import React from 'react'
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../../services/axiosinstance';
-import {Image, Text, Flex, Button, useDisclosure, Tag, TagLeftIcon, TagLabel, Heading} from "@chakra-ui/react";
+import {Image, Text, Flex, Button, useDisclosure, Tag, 
+  TagLeftIcon, TagLabel, Heading, AlertIcon,
+  Alert} from "@chakra-ui/react";
 import { useState } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import NextLink from "next/link";
 
 function profile(props) {
-    const { isOpen, onOpen, onClose } = useDisclosure()
+    
     const [user, setUser] = useState(props.user)
     const [preview, setPreview] = useState(false)
-    
+    const [sent, setSent] = useState(false)
+
     const {
         user_id,
         username,
@@ -18,7 +21,8 @@ function profile(props) {
         isVerified,
          fullname,
         email,
-        avatar
+        avatar,
+        password
         
       } = user;
 
@@ -34,7 +38,7 @@ function profile(props) {
 
       const addressAPI = "http://localhost:2105"
       const addressAvatar = addressAPI.concat(`${avatar}`)
-
+    
     const userVerified = userProfile.isVerified;
     if (userVerified) {
     if (typeof window !== "undefined") {
@@ -50,6 +54,22 @@ function profile(props) {
     }
 
       console.log(`ini user ${props.user.username}`)
+    
+      const onResendClick = async () => {
+        try {
+          const body = {
+            username,
+            email,
+            password,
+          };
+          
+          const res = await axiosInstance.post("/users/resend", body)
+          setSent(true)
+        } catch (error) {
+          console.log(error)
+          alert(error);
+        }
+      }
 
 console.log(`http://localhost:2105${avatar}`)
 console.log(addressAvatar)
@@ -75,20 +95,39 @@ return (
       </Flex>
     </Flex>
       <>
-      <NextLink href="/profile/editprofile">
+      {isVerified? (<NextLink href="/profile/editprofile">
       <Button       colorScheme="teal"
                     variant={"outline"}
-                    onClick={onOpen}
                     size="sm"
                     width={100}
                     alignSelf="center"
                                       >
                     Edit Profile
                   </Button>
-      </NextLink>
+      </NextLink>):(
+        <>
+        <Alert status='warning' rounded={6} mb={3}>
+        <AlertIcon />
+        You need to verify your account before editing your profile!
+      </Alert>
+      <Button       colorScheme="teal"
+                    variant={"outline"}
+                    size="sm"
+                    width={170}
+                    alignSelf="center"
+                    onClick={onResendClick}                  
+                    >
+                    Send Email verification
+                  </Button>
+        </>
+      )}
+      {sent?(<Alert status='success' rounded={6} mt={3}>
+      <AlertIcon />
+      new verification email sent!
+    </Alert>):(<></>)}
     </>
       </Flex>
-    </Flex>  )
+    </Flex> )
 }
 
 export async function getServerSideProps(context) {
