@@ -17,17 +17,24 @@ import axiosInstance from '../services/axiosinstance'
 import next from 'next'
 
 
-export default function Home() {
+export default function Home(props) {
 
   const [isLiked, setIsLiked] = useState("false")
   const [caption, setCaption] = useState("")
   const [image, setImage] = useState()
   const [preview, setPreview] = useState()
   const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState(props.user);
+  const [allPosts, setAllPosts] = useState(props.allPosts);
   const router = useRouter()
-  console.log(`ini caption ${caption}`)
-  console.log(`ini image ${image}`)
+  console.log(props.allPosts)
 
+  // console.log(`ini caption ${caption}`)
+  // console.log(`ini image ${image}`)
+  // const getPost = async () => {
+  //   const res = await axiosInstance.get("/posts");
+    // setPost(res.data.data);
+  // };
 
   const testPosts = [{
     post_id: 1,
@@ -71,22 +78,19 @@ export default function Home() {
   }
   ,]
 
-  function postMaker (post) {
+  function renderPosts (post) {
   
     return (
         <Box as='button' bg={"gray.100"}
         maxW={1500} maxH={1200} borderWidth='1px' borderRadius='lg' overflow='hidden' my={6} mx={12}>
       <Image src={post.imageUrl} width={480} height={320} borderWidth='1px' borderRadius='lg' overflow='hidden'/>
-
       <Box p='3'>
         <Box
-         
           as='h3'
           noOfLines={2}
         >
           {post.title}
         </Box>
-
         <Box display='flex' mt='2' alignItems='center'>
         <StarIcon
                 color={post.isLiked ? 'orange' : 'gray.300'}
@@ -99,9 +103,9 @@ export default function Home() {
     </Box>
     )
   }
-
-  const mappedPosts = testPosts.map(postMaker)
-
+  const [] = allPosts;
+  //const mappedPosts = testPosts.map(renderPosts)
+  const mappedPosts = allPosts.map(renderPosts)
   
 
   async function getSessionAsync(){
@@ -143,6 +147,11 @@ export default function Home() {
       } catch (error) {
         alert(error)
         console.log(error)
+      } finally {
+        setLoading(false)
+        setImage(null)
+        setCaption(null)
+        setPreview(null)
       }
     }
 
@@ -157,13 +166,27 @@ export default function Home() {
           bg="gray.50"
           value={caption}
           onChange={(event) => setCaption(event.target.value)}/>
-
-          <Button mx={3} 
+          {loading?(
+            <Button mx={3} isLoading
+            variant={"outline"} colorScheme="teal" alignItems="center" width="20vh" 
+            onClick={onPostClick}>
+              Pepe Post!
+            </Button>
+          ):(
+            <Button mx={3} 
           variant={"outline"} colorScheme="teal" alignItems="center" width="20vh" 
           onClick={onPostClick}>
-            Pepe Post!</Button>
+            Pepe Post!
+          </Button>
+          )}
           
-    {preview? (<Button mx={3} colorScheme="orange" alignItems="center" width="22vh" onClick={() =>{ setPreview(null), setImage(null)}}>Remove Image</Button>):(<>
+    {preview? 
+    (<>{loading?(
+      <Button mx={3} isLoading colorScheme="orange" alignItems="center" width="22vh" onClick={() =>{ setPreview(null), setImage(null)}}>Remove Image</Button>
+    ):(
+      <Button mx={3} colorScheme="orange" alignItems="center" width="22vh" onClick={() =>{ setPreview(null), setImage(null)}}>Remove Image</Button>
+    )}
+    </>):(<>
       <label for="inputImage"> <Tag variant='outline' colorScheme='teal'>
       <TagLeftIcon  boxSize={"12px"} as={AddIcon} />
       <TagLabel>
@@ -196,9 +219,10 @@ export async function getServerSideProps(context) {
     const user_id = session.user.user_id;
     console.log({user_id})
     const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
-    
+    const postRes = await axiosInstance.get(`/posts`);
+
     return {
-      props: {user: res.data.data.result, session},
+      props: {user: res.data.data.result, allPosts: postRes.data.data, session},
     };
   } catch (error) {
     console.log({error});
