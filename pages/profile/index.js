@@ -135,7 +135,7 @@ export async function getServerSideProps(context) {
       const session = await getSession({req: context.req});
   
       if (!session) return {redirect: {destination: "/login"}};
-        console.log({session})
+        //console.log({session})
       const {accessToken} = session.user;
   
       const config = {
@@ -143,7 +143,7 @@ export async function getServerSideProps(context) {
       };
   
       const user_id = session.user.user_id;
-      console.log({user_id})
+      //console.log({user_id})
       const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
       
       return {

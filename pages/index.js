@@ -1,18 +1,11 @@
 import { Input, Button, Flex, Box, Tag, TagLeftIcon, TagLabel, Text, Link, VStack, Badge, HStack, Spacer
-,Stack } from '@chakra-ui/react'
+,Stack, Image, Alert, AlertIcon } from '@chakra-ui/react'
 import Head from 'next/head'
-import Image from 'next/image'
 import { useState, useEffect } from 'react'
 import styles from '../styles/Home.module.css'
 import {getSession} from 'next-auth/react'
 import { useRouter } from 'next/router';
 import {Icon, AddIcon, StarIcon} from '@chakra-ui/icons'
-import pepega from '../public/images/pepega.jpg'
-import coolpepe from '../public/images/coolpepe.jpg'
-import sadge from '../public/images/sadge.png'
-import gutsgrin from '../public/images/gutsgrin.jpg'
-import geekcat from '../public/images/geekcat.png'
-import panelberserk from '../public/images/panelberserk.jpg'
 import axiosInstance from '../services/axiosinstance'
 import next from 'next'
 
@@ -27,69 +20,33 @@ export default function Home(props) {
   const [user, setUser] = useState(props.user);
   const [allPosts, setAllPosts] = useState(props.allPosts);
   const router = useRouter()
-  console.log(props.allPosts)
+  const [session, setSession] = useState(false)
+  const lengthCaption = caption.length
 
-  // console.log(`ini caption ${caption}`)
-  // console.log(`ini image ${image}`)
-  // const getPost = async () => {
-  //   const res = await axiosInstance.get("/posts");
-    // setPost(res.data.data);
-  // };
-
-  const testPosts = [{
-    post_id: 1,
-    imageUrl: pepega,
-    title: 'Ini pepega',
-    likeCount: 4,
-    isLiked: true,
-  }, {
-    post_id: 2,
-    imageUrl: coolpepe,
-    title: 'Ini coolpepe',
-    likeCount: 9,
-    isLiked: true,
-  }, {
-    post_id: 3,
-    imageUrl: sadge,
-    title: 'Ini sadge',
-    likeCount: 34,
-    isLiked: false,
-  },
-  {
-    post_id: 4,
-    imageUrl: gutsgrin,
-    title: 'Ini guts tolong dikondisikan kerennya, best manga ever boi YAGESYAK anjas kelas',
-    likeCount: 999,
-    isLiked: true,
-  }
-  , {
-    post_id: 5,
-    imageUrl: geekcat,
-    title: 'Ini meng',
-    likeCount: 34,
-    isLiked: true,
-  },
-  {
-    post_id: 6,
-    imageUrl: panelberserk,
-    title: 'Ini berserk',
-    likeCount: 999,
-    isLiked: true,
-  }
-  ,]
 
   function renderPosts (post) {
+    const addressAPI = "http://localhost:2105"
+    const addressImage = addressAPI.concat(`${post.image}`)
   
     return (
-        <Box as='button' bg={"gray.100"}
-        maxW={1500} maxH={1200} borderWidth='1px' borderRadius='lg' overflow='hidden' my={6} mx={12}>
-      <Image src={post.imageUrl} width={480} height={320} borderWidth='1px' borderRadius='lg' overflow='hidden'/>
+        <Box as='button' bg={"gray.100"} alignContent={"center"} alignItems={"center"} boxShadow={"dark-lg"}
+        width={480} maxH={1200} borderWidth='1px' borderRadius='lg' overflow='hidden' mt={20} mx={12} _hover={{    background: "white",
+        color: "orange.400",}}>
+      <Image src={addressImage} width={480} height={320} borderWidth='1px' borderRadius='lg' overflow='hidden'/>
       <Box p='3'>
+        <Box display='flex' alignItems='baseline'>
+        <Badge borderRadius='md' px='2' colorScheme='teal'>
+            Posted by
+          </Badge>
+        </Box>
         <Box
-          as='h3'
+          mt='1'
+          fontWeight='medium'
+          as='h4'
+          lineHeight='tight'
           noOfLines={2}
         >
-          {post.title}
+          {post.caption}
         </Box>
         <Box display='flex' mt='2' alignItems='center'>
         <StarIcon
@@ -107,9 +64,9 @@ export default function Home(props) {
   //const mappedPosts = testPosts.map(renderPosts)
   const mappedPosts = allPosts.map(renderPosts)
   
-
   async function getSessionAsync(){
     const session = await getSession()
+    setSession(true)
     if(!session) { router.replace("/login") }  
     console.log({session});
     }
@@ -154,11 +111,15 @@ export default function Home(props) {
         setPreview(null)
       }
     }
+  
+  
 
   return (
-    <VStack spacing='24px'>
-      <Box  
+    <VStack spacing='18px'>
+      {user.isVerified?(<>
+        <Box  
     maxH="10vh" width= "80%" align-items="center" my="auto" mx="auto" padding={"auto"} rounded={8}>
+      <Text mb={3} fontSize={"3xl"} fontWeight={"semibold"} color={"teal.500"} fontStyle={'normal'}>Hi! {user.username}!</Text>
      <Input type="text" width={"100%"}
           placeholder="What's going on?"
           variant="outline"
@@ -200,6 +161,11 @@ export default function Home(props) {
       <Flex wrap={"wrap"} direction={"column"} align='center'>
       {mappedPosts}
       </Flex>
+      </>):(<Alert status='info' rounded={6} mt={3}>
+      <AlertIcon />
+      Your account is not verified! please check your profile to send a new email verification!
+    </Alert>)}
+      
     </VStack>
   )
 }
@@ -209,7 +175,7 @@ export async function getServerSideProps(context) {
     const session = await getSession({req: context.req});
 
     if (!session) return {redirect: {destination: "/login"}};
-      console.log({session})
+      console.log(`HOME SESSION ${session}`)
     const {accessToken} = session.user;
 
     const config = {
@@ -217,7 +183,7 @@ export async function getServerSideProps(context) {
     };
 
     const user_id = session.user.user_id;
-    console.log({user_id})
+   // console.log({user_id})
     const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
     const postRes = await axiosInstance.get(`/posts`);
 

@@ -1,14 +1,17 @@
-import { Box, Button, HStack, Text, Flex, Link } from "@chakra-ui/react";
+import { Box, Button, HStack, Text, Flex, Link, Badge } from "@chakra-ui/react";
 import NextLink from "next/link";
 import {InfoOutlineIcon, ExternalLinkIcon} from "@chakra-ui/icons";
 import {signOut} from "next-auth/react"
 import {getSession} from 'next-auth/react'
 import { useRouter } from 'next/router';
 import { useEffect, useState } from "react";
+import axiosInstance from '../../services/axiosinstance'
 
 function Navigation() {
   
 const [session, setSession] = useState(false)
+// const [user, setUser] = useState(props.user)
+// console.log(`NAVIGATION PAGE console ${props.user}`)
 
   async function getSessionAsync(){
     
@@ -23,7 +26,7 @@ const [session, setSession] = useState(false)
   
     useEffect(() => {
     getSessionAsync()  
-    },)
+    }, )
 
     return(
         <Box width= "90%" align-items="center" my="2px" mx="auto" padding={5}>
@@ -63,5 +66,30 @@ const [session, setSession] = useState(false)
         </Box>
     );
 }
+
+// export async function getServerSideProps(context) {
+//   try {
+//     const session = await getSession({req: context.req});
+
+//     if (!session) return {redirect: {destination: "/login"}};
+//       console.log(`NAVIGATION SESSION ${session}`)
+//     const {accessToken} = session.user;
+
+//     const config = {
+//       headers: {Authorization: `Bearer ${accessToken}`},
+//     };
+
+//     const user_id = session.user.user_id;
+//     console.log(`NAVIGATION USER ID ${user_id}`)
+//     const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
+    
+//     return {
+//       props: {user: res.data.data.result, session},
+//     };
+//   } catch (error) {
+//     console.log({error});
+//     return {props: {}};
+//   }
+// }
 
 export default Navigation;
