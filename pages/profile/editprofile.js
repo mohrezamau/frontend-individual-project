@@ -5,8 +5,7 @@ import { useState } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import { getSession } from 'next-auth/react';
 import axiosInstance from '../../services/axiosinstance';
-import sadge from "../../public/images/pepega.jpg"
-import pepega from "../../public/images/pepega.jpg"
+import NextLink from "next/link";
 
 function editprofile(props) {
     const [preview, setPreview] = useState(false)
@@ -16,12 +15,7 @@ function editprofile(props) {
     
     console.log(avatar)
 
-    const {
-      user_id,
-      username,
-      isVerified,
-      email,
-    } = props.user;
+  
   
 
     const onFileChange = (event) => {
@@ -46,8 +40,9 @@ function editprofile(props) {
           };
     
           const res = await axiosInstance.patch("/users/avatar", body, config);
-    
+          
           alert(res.data.message);
+          window.location.reload();
         } catch (error) {
           console.log(error);
           alert(error);
@@ -69,11 +64,12 @@ function editprofile(props) {
           console.log({bio}, {fullname}, {body})
           const res = await axiosInstance.patch("/users", body, config);
           alert(res.data.message)
+          window.location.reload();
           // const resGetUserProfile = await axiosInstance.get(
           //   `/users/profile/${user_id}`,
           //   config
           // );
-    
+          
           // setBio(resGetUserProfile.data.data.result.bio);
           // setFullname(resGetUserProfile.data.data.result.fullname)
         } catch (error) {

@@ -4,16 +4,17 @@ import axiosInstance from '../../services/axiosinstance';
 import {Image, Text, Flex, Button, useDisclosure, Tag, 
   TagLeftIcon, TagLabel, Heading, AlertIcon,
   Alert} from "@chakra-ui/react";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AddIcon } from '@chakra-ui/icons';
 import NextLink from "next/link";
 
 function profile(props) {
-    
+   
     const [user, setUser] = useState(props.user)
     const [preview, setPreview] = useState(false)
     const [sent, setSent] = useState(false)
-
+    const addressAPI = "http://localhost:2105"
+    
     const {
         user_id,
         username,
@@ -26,34 +27,34 @@ function profile(props) {
         
       } = user;
 
-      const userProfile = {
-        user_id,
-        isVerified,
-        username,
-        bio,
-        fullname,
-        email,
-        avatar
-      };
-
-      const addressAPI = "http://localhost:2105"
+      // const userProfile = {
+      //   user_id,
+      //   isVerified,
+      //   username,
+      //   bio,
+      //   fullname,
+      //   email,
+      //   avatar
+      // };
       const addressAvatar = addressAPI.concat(`${avatar}`)
-    
-    const userVerified = userProfile.isVerified;
-    if (userVerified) {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("userVerified", true);
-    }
-    }
+      
+      
+    // const userVerified = userProfile.isVerified;
+    // if (userVerified) {
+    // if (typeof window !== "undefined") {
+    //   localStorage.setItem("userVerified", true);
+    // }
+    // }
 
-    const userID = userProfile.user_id;
-    if (userID) {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("user_id", userID);
-    }
-    }
+    // const userID = userProfile.user_id;
+    // if (userID) {
+    // if (typeof window !== "undefined") {
+    //   localStorage.setItem("user_id", userID);
+    // }
+    // }
 
       console.log(`ini user ${props.user.username}`)
+
     
       const onResendClick = async () => {
         try {

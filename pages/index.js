@@ -21,8 +21,8 @@ export default function Home(props) {
   const [allPosts, setAllPosts] = useState(props.allPosts);
   const router = useRouter()
   const [session, setSession] = useState(false)
-  const lengthCaption = caption.length
-
+ 
+  console.log(allPosts)
 
   function renderPosts (post) {
     const addressAPI = "http://localhost:2105"
@@ -38,6 +38,16 @@ export default function Home(props) {
         <Badge borderRadius='md' px='2' colorScheme='teal'>
             Posted by
           </Badge>
+          <Box
+            color='gray.500'
+            fontWeight='semibold'
+            letterSpacing='wide'
+            fontSize='xs'
+            textTransform='uppercase'
+            ml='2'
+          >
+           created at &bull; 
+          </Box>
         </Box>
         <Box
           mt='1'
@@ -100,7 +110,7 @@ export default function Home(props) {
         console.log(image, caption, user_id)
           const res = await axiosInstance.post("/posts", body, config);
           alert(res.data.message)
-
+          window.location.reload();
       } catch (error) {
         alert(error)
         console.log(error)
@@ -149,7 +159,7 @@ export default function Home(props) {
     )}
     </>):(<>
       <label for="inputImage"> <Tag variant='outline' colorScheme='teal'>
-      <TagLeftIcon  boxSize={"12px"} as={AddIcon} />
+      <TagLeftIcon boxSize={"12px"} as={AddIcon} />
       <TagLabel>
         Add Image
       </TagLabel>
