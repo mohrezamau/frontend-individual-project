@@ -12,6 +12,7 @@ import {Icon, AddIcon, StarIcon} from '@chakra-ui/icons'
 import {getSession} from 'next-auth/react'
 import axiosInstance from '../../services/axiosinstance';
 import { useDisclosure } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 
 function postDetail(props) {
   const [user, setUser] = useState(props.user)
@@ -21,6 +22,7 @@ function postDetail(props) {
   const [caption, setCaption] = useState("")
   const [allowed, setAllowed] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const router = useRouter()
 
   console.log(post, poster)
 
@@ -47,9 +49,17 @@ function postDetail(props) {
     }
   }
   
-
-  
-
+  const onDelete = async () => {
+    try {
+      const res = await axiosInstance.delete(`/posts/${post.post_id}`)
+      alert(res.data.message)
+      router.replace("/")
+      
+    } catch (error) {
+      console.log(error);
+      alert(error)
+    }
+  }
     
 
     const createdAt = post.createdAt
@@ -114,6 +124,7 @@ function postDetail(props) {
               >
               Post comment
             </Button>
+  <Box bg={"blue.200"} width={"80%"}></Box>
   </Box>
    
   <Flex direction={"column"}>
@@ -148,7 +159,7 @@ function postDetail(props) {
             <Button colorScheme='teal' variant='outline' onClick={onSaveEdit} >Save</Button>
             <Button mx={3} my={1}
             variant={"ghost"} colorScheme="pink" alignItems="center" width="16vh" 
-            
+            onClick={onDelete}
               >
               Delete Post
             </Button>
