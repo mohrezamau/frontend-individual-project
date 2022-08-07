@@ -22,12 +22,14 @@ export default function Home(props) {
   const router = useRouter()
   const [session, setSession] = useState(false)
  
-  console.log(allPosts)
+  console.log({props})
 
   function renderPosts (post) {
     const addressAPI = "http://localhost:2105"
     const addressImage = addressAPI.concat(`${post.image}`)
-  
+    const createdAt = post.createdAt
+    const slicedCreatedAt = createdAt.slice(0,10)
+
     return (
         <Box as='button' bg={"gray.100"} alignContent={"center"} alignItems={"center"} boxShadow={"dark-lg"}
         width={480} maxH={1200} borderWidth='1px' borderRadius='lg' overflow='hidden' mt={20} mx={12} _hover={{    background: "white",
@@ -36,7 +38,7 @@ export default function Home(props) {
       <Box p='3'>
         <Box display='flex' alignItems='baseline'>
         <Badge borderRadius='md' px='2' colorScheme='teal'>
-            Posted by
+            Posted by {post.username}
           </Badge>
           <Box
             color='gray.500'
@@ -46,7 +48,7 @@ export default function Home(props) {
             textTransform='uppercase'
             ml='2'
           >
-           created at &bull; 
+           created at &bull; {slicedCreatedAt}
           </Box>
         </Box>
         <Box
