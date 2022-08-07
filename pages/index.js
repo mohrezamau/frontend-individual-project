@@ -63,9 +63,7 @@ export default function Home(props) {
           {post.caption}
         </Box>
         <Box display='flex' mt='2' alignItems='center'>
-        <StarIcon
-                color={post.isLiked ? 'orange' : 'gray.300'}
-              />
+        <></>
           <Box as='span' ml='2' color='gray.600' fontSize='sm'>
             {post.likeCount}
           </Box>

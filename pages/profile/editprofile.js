@@ -65,13 +65,7 @@ function editprofile(props) {
           const res = await axiosInstance.patch("/users", body, config);
           alert(res.data.message)
           window.location.reload();
-          // const resGetUserProfile = await axiosInstance.get(
-          //   `/users/profile/${user_id}`,
-          //   config
-          // );
           
-          // setBio(resGetUserProfile.data.data.result.bio);
-          // setFullname(resGetUserProfile.data.data.result.fullname)
         } catch (error) {
           console.log({error});
           alert(error);

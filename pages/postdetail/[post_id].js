@@ -1,30 +1,56 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 import { Input, Button, Flex, Box, Tag, TagLeftIcon, TagLabel, Text, Link, VStack, Badge, HStack, Spacer
-  ,Stack, Image, Alert, AlertIcon } from '@chakra-ui/react'
+  ,Stack, Image, Alert, AlertIcon, Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton } from '@chakra-ui/react'
 import {Icon, AddIcon, StarIcon} from '@chakra-ui/icons'
 import {getSession} from 'next-auth/react'
 import axiosInstance from '../../services/axiosinstance';
+import { useDisclosure } from '@chakra-ui/react';
 
 function postDetail(props) {
   const [user, setUser] = useState(props.user)
   const [post, setPost] = useState(props.post)
   const [poster, setPoster] = useState(props.poster)
   const [session, setSession] = useState(false)
+  const [caption, setCaption] = useState("")
+  const [allowed, setAllowed] = useState(false)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   console.log(post, poster)
 
+  useEffect(() => {
+    const {user_id} = props.session.user
+    if (user_id == post.user_id){
+      setAllowed(true)
+    }
+  }, [])
   
 
-  async function getSessionAsync(){
-    const session = await getSession()
-    setSession(true)
-    if(!session) { router.replace("/login") }  
-    console.log({session});
+  const onSaveEdit = async () => {
+    try {
+      const body = {
+        caption
+      }
+      const res = await axiosInstance.patch(`/posts/${post.post_id}`, body)
+      alert(res.data.message)
+      window.location.reload();
+      
+    } catch (error) {
+      console.log(error);
+      alert(error)
     }
-    useEffect(() => {
-    getSessionAsync()  
-    }, [])
+  }
+  
+
+  
+
+    
 
     const createdAt = post.createdAt
     console.log(createdAt)
@@ -86,21 +112,51 @@ function postDetail(props) {
           <Button mx={3}
             variant={"outline"} colorScheme="teal" alignItems="center" height="4vh" width="20vh" 
               >
-              Pepe comment!
+              Post comment
             </Button>
   </Box>
    
   <Flex direction={"column"}>
-            <Button mx={3} my={1}
+{allowed? (
+  <>
+  
+  <Button mx={3} my={1}
             variant={"outline"} colorScheme="teal" alignItems="center" height="4vh" width="20vh" 
-              >
+            onClick={onOpen} >
               Edit Post
             </Button>
+            <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+          <ModalHeader>Edit Post</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+          <Input type="text" width={"100%"}
+          placeholder="caption..."
+          variant="outline"
+          mb="10px"
+          value={caption}
+          onChange={(event) => setCaption(event.target.value)}  
+          bg="gray.50">
+          </Input>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button variant='outline' colorScheme='orange' mr={3} onClick={onClose}>
+              Cancel
+            </Button>
+            <Button colorScheme='teal' variant='outline' onClick={onSaveEdit} >Save</Button>
             <Button mx={3} my={1}
-            variant={"outline"} colorScheme="orange" alignItems="center" height="4vh" width="20vh" 
+            variant={"ghost"} colorScheme="pink" alignItems="center" width="16vh" 
+            
               >
               Delete Post
             </Button>
+          </ModalFooter>
+          </ModalContent>
+          </Modal>
+  </>
+):(<></>)}
   </Flex>
       </Flex>
   )
