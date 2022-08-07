@@ -29,9 +29,11 @@ export default function Home(props) {
     const addressImage = addressAPI.concat(`${post.image}`)
     const createdAt = post.createdAt
     const slicedCreatedAt = createdAt.slice(0,10)
-
+    const postId = post.post_id
+    // key={postId} href={`/postdetail/${postId}'}
     return (
-        <Box as='button' bg={"gray.100"} alignContent={"center"} alignItems={"center"} boxShadow={"dark-lg"}
+        <Link key={postId} href={`/postdetail/${postId}`}>
+        <Box as='button' bg={"gray.100"} alignContent={"center"} alignItems={"center"} boxShadow={"2xl"}
         width={480} maxH={1200} borderWidth='1px' borderRadius='lg' overflow='hidden' mt={20} mx={12} _hover={{    background: "white",
         color: "orange.400",}}>
       <Image src={addressImage} width={480} height={320} borderWidth='1px' borderRadius='lg' overflow='hidden'/>
@@ -70,6 +72,8 @@ export default function Home(props) {
         </Box>
       </Box>
     </Box>
+        </Link>
+          
     )
   }
   const [] = allPosts;
