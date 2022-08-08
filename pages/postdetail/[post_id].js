@@ -21,6 +21,7 @@ function postDetail(props) {
   const [phrase, setPhrase] = useState("")
   const [caption, setCaption] = useState("")
   const [allowed, setAllowed] = useState(false)
+  const [liked, setLiked] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
 
@@ -107,6 +108,13 @@ function renderComments (comment){
     }
   }
     
+  const onLike = () => {
+   setLiked(true)
+  }
+
+  const onUnlike = () => {
+    setLiked(false)
+  }
 
     const createdAt = post.createdAt
     const slicedCreatedAt = createdAt.slice(0,10)
@@ -147,12 +155,11 @@ function renderComments (comment){
       </Box>
       <Box display='flex' mt='2' alignItems='center'>
       <StarIcon
-              color={false ? 'orange' : 'gray.300'}
+              color={liked ? 'orange' : 'gray.300'}
             />
         <Box as='span' ml='2' color='gray.600' fontSize='sm'>
           ... likes
         </Box>
-        
       </Box>
     </Box>
   </Box>
@@ -174,6 +181,9 @@ function renderComments (comment){
               >
               Post comment
             </Button>
+            {/* {!liked?(<><StarIcon color={"gray.300"}></StarIcon><Button onClick={onLike}>Like Post</Button></>) */}
+            {/* :(<><StarIcon color={"orange"}></StarIcon><Button onClick={onUnlike}>Unlike Post</Button></>)} */}
+            
   {mappedComments}
   </Box>
   
