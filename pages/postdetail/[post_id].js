@@ -109,7 +109,7 @@ function postDetail(props) {
     </Box>
   </Box>
  
-  <Box width={480} height={480} p={3} bg={"gray.200"} rounded={6}>
+  <Box width={480} height={480} p={3} bg={"gray.100"} rounded={6} alignContent={"center"} alignItems={"center"}>
   <Input type="text" width={"100%"}
           placeholder="add comment..."
           variant="outline"
@@ -117,12 +117,45 @@ function postDetail(props) {
           bg="gray.50">
           </Input>
           <Button mx={3}
-            variant={"outline"} colorScheme="teal" alignItems="center" height="4vh" width="20vh" 
+            variant={"outline"} fontSize={"small"} colorScheme="teal" alignItems="center" height="4vh" width="14vh" 
               >
               Post comment
             </Button>
-  <Box bg={"blue.200"} width={"80%"}></Box>
+  <Box fontSize={"md"} bg={"teal.100"} width={400} height={70} p={3} my={3} rounded={10}>
+  <Box display='flex' alignItems='baseline'>
+      <Badge fontSize={"xx-small"} borderRadius='md' px='2' colorScheme='teal'>
+          comment by commenter
+        </Badge>
+        <Box
+          color='gray.500'
+          letterSpacing='normal'
+          fontSize='small'
+          ml='2'
+        >
+         created at &bull; timetimetime
+        </Box>
+      </Box>
+    test this is a comment
   </Box>
+      {/* space */}
+  <Box fontSize={"md"} bg={"teal.100"} width={400} height={70} p={3} my={3} rounded={10}>
+  <Box display='flex' alignItems='baseline'>
+      <Badge fontSize={"xx-small"} borderRadius='md' px='2' colorScheme='teal'>
+          comment by commenter
+        </Badge>
+        <Box
+          color='gray.500'
+          letterSpacing='normal'
+          fontSize='small'
+          ml='2'
+        >
+         created at &bull; timetimetime
+        </Box>
+      </Box>
+    test this is a comment
+  </Box>
+  </Box>
+  
    
   <Flex direction={"column"}>
 {allowed? (

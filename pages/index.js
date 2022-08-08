@@ -1,13 +1,12 @@
-import { Input, Button, Flex, Box, Tag, TagLeftIcon, TagLabel, Text, Link, VStack, Badge,
-Stack, Image, Alert, AlertIcon } from '@chakra-ui/react'
-import Head from 'next/head'
+import { Input, Button, Flex, Box, Tag, TagLeftIcon, 
+  TagLabel, Text, Link, VStack, Badge,
+   Image, Alert, AlertIcon } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
-import styles from '../styles/Home.module.css'
 import {getSession} from 'next-auth/react'
 import { useRouter } from 'next/router';
-import {Icon, AddIcon, StarIcon} from '@chakra-ui/icons'
+import { AddIcon } from '@chakra-ui/icons'
 import axiosInstance from '../services/axiosinstance'
-import next from 'next'
+
 
 
 export default function Home(props) {
@@ -32,10 +31,10 @@ export default function Home(props) {
     const postId = post.post_id
     // key={postId} href={`/postdetail/${postId}'}
     return (
-        <Link key={postId} href={`/postdetail/${postId}`}>
+        <Link mt={6} key={postId} href={`/postdetail/${postId}`}>
         <Box as='button' bg={"gray.100"} alignContent={"center"} alignItems={"center"} boxShadow={"2xl"}
         width={480} maxH={1200} borderWidth='1px' borderRadius='lg' overflow='hidden' mt={20} mx={12} _hover={{    background: "white",
-        color: "orange.400",}}>
+        color: "orange.400" }}>
       <Image src={addressImage} width={480} height={320} borderWidth='1px' borderRadius='lg' overflow='hidden'/>
       <Box p='3'>
         <Box display='flex' alignItems='baseline'>
@@ -155,10 +154,11 @@ export default function Home(props) {
       <Button mx={3} colorScheme="orange" alignItems="center" width="22vh" onClick={() =>{ setPreview(null), setImage(null)}}>Remove Image</Button>
     )}
     </>):(<>
-      <label for="inputImage"> <Tag variant='outline' colorScheme='teal'>
+      <label for="inputImage"> <Tag variant='outline' colorScheme='teal' _hover={{    background: "white",
+        color: "orange.400",}}>
       <TagLeftIcon boxSize={"12px"} as={AddIcon} />
       <TagLabel>
-        Add Image
+        Image
       </TagLabel>
     </Tag></label>
     <input id="inputImage" style={{visibility: 'hidden'}} type={"file"} value={image}
