@@ -13,23 +13,27 @@ import {getSession} from 'next-auth/react'
 import axiosInstance from '../../services/axiosinstance';
 import { useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 function postDetail(props) {
+  const [likeCount, setLikeCount] = useState(props.like.length)
   const [allcomments, setAllcomments] = useState(props.comment)
   const [post, setPost] = useState(props.post)
   const [poster, setPoster] = useState(props.poster)
   const [phrase, setPhrase] = useState("")
   const [caption, setCaption] = useState("")
   const [allowed, setAllowed] = useState(false)
-  const [liked, setLiked] = useState(false)
+  const {user_id} = props.session.user
+  const [liked, setLiked] = useState(props.like.some(function (user) {
+        return user.user_id === user_id;
+      }))
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
-
   
   const [] = allcomments;
   const mappedComments = allcomments.map(renderComments)
-  // const filteredComments = allcomments.filter
-  // function checkPost_id(comment) {}
+
+
 
 function renderComments (comment){
   const createdAt = comment.createdAt
@@ -108,12 +112,43 @@ function renderComments (comment){
     }
   }
     
-  const onLike = () => {
-   setLiked(true)
+  const onLike = async () => {
+
+    const {user_id} = props.session.user
+
+   try {
+    const body = {user_id}
+
+    const res = await axiosInstance.post(`/likes/${props.post.post_id}`, body)
+
+
+    setLiked(true)
+    setLikeCount(likeCount + 1)
+   } catch (error) {
+    console.log(error)
+    alert(error)
+   }
   }
 
-  const onUnlike = () => {
-    setLiked(false)
+  const onUnlike = async () => {
+    
+    try {
+      const session = await getSession();
+
+        const {accesstoken} = session.user;
+        const config = {
+          headers: {Authorization: `Bearer ${accesstoken}`},
+        };
+      const res = await axiosInstance.delete(`/likes/${post.post_id}`, config)
+
+     
+
+      setLiked(false)
+      setLikeCount(likeCount - 1)
+    } catch (error) {
+      console.log(error)
+    alert(error)
+    }
   }
 
     const createdAt = post.createdAt
@@ -158,7 +193,7 @@ function renderComments (comment){
               color={liked ? 'orange' : 'gray.300'}
             />
         <Box as='span' ml='2' color='gray.600' fontSize='sm'>
-          ... likes
+          {likeCount} likes
         </Box>
       </Box>
     </Box>
@@ -181,8 +216,8 @@ function renderComments (comment){
               >
               Post comment
             </Button>
-            {/* {!liked?(<><StarIcon color={"gray.300"}></StarIcon><Button onClick={onLike}>Like Post</Button></>) */}
-            {/* :(<><StarIcon color={"orange"}></StarIcon><Button onClick={onUnlike}>Unlike Post</Button></>)} */}
+            {!liked?(<><StarIcon color={"gray.300"}></StarIcon><Button onClick={onLike}>Like Post</Button></>)
+         :(<><StarIcon color={"orange"}></StarIcon><Button onClick={onUnlike}>Unlike Post</Button></>)} 
             
   {mappedComments}
   </Box>
@@ -252,12 +287,17 @@ export async function getServerSideProps(context) {
     const user_id = session.user.user_id;
     const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
     const postRes = await axiosInstance.get(`/posts/getPost/${post_id}`, config);
-    const commentRes = await axiosInstance.get(`/comments/${post_id}`, config)
-    console.log(commentRes.data.data)
+    const commentRes = await axiosInstance.get(`/comments/${post_id}`, config);
+    const likeRes = await axiosInstance.get(`/likes/${post_id}`, config)
+    
+    console.log(user_id, res, postRes, commentRes);
 
     return {
       props: {user: res.data.data.result, 
-        post: postRes.data.data, poster: postRes.data.resGetPoster, comment: commentRes.data.data ,session},
+        post: postRes.data.data, poster: postRes.data.resGetPoster, 
+        comment: commentRes.data.data,
+        like: likeRes.data.data
+        ,session},
     };
   } catch (error) {
     console.log({error});
