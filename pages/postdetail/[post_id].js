@@ -15,14 +15,46 @@ import { useDisclosure } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 
 function postDetail(props) {
-  const [user, setUser] = useState(props.user)
+  const [allcomments, setAllcomments] = useState(props.comment)
   const [post, setPost] = useState(props.post)
   const [poster, setPoster] = useState(props.poster)
-  const [session, setSession] = useState(false)
+  const [phrase, setPhrase] = useState("")
   const [caption, setCaption] = useState("")
   const [allowed, setAllowed] = useState(false)
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
+
+  
+  const [] = allcomments;
+  const mappedComments = allcomments.map(renderComments)
+  // const filteredComments = allcomments.filter
+  // function checkPost_id(comment) {}
+
+function renderComments (comment){
+  const createdAt = comment.createdAt
+  const slicedCreatedAt = createdAt.slice(0,10)
+  
+    return (
+      <Box fontSize={"md"} bg={"teal.100"} width={400} height={70} p={3} my={3} mx={7} rounded={10}>
+      <Box display='flex' alignItems='baseline'>
+          <Badge fontSize={"xx-small"} borderRadius='md' px='2' colorScheme='teal'>
+              comment by {comment.username}
+            </Badge>
+            <Box
+              color='gray.500'
+              letterSpacing='normal'
+              fontSize='small'
+              ml='2'
+            >
+             created at &bull; {slicedCreatedAt}
+            </Box>
+          </Box>
+        {comment.phrase}
+      </Box>
+    )
+  
+
+}
 
   useEffect(() => {
     const {user_id} = props.session.user
@@ -55,6 +87,22 @@ function postDetail(props) {
       
     } catch (error) {
       console.log(error);
+      alert(error)
+    }
+  }
+
+  const onComment = async () => {
+    const {user_id} = props.session.user
+    console.log({user_id})
+    try {
+        const body = {
+          phrase, user_id
+        }
+
+      const res = await axiosInstance.post(`/comments/${post.post_id}`, body)
+      alert(res.data.message)
+    } catch (error) {
+      console.log(error)
       alert(error)
     }
   }
@@ -102,7 +150,7 @@ function postDetail(props) {
               color={false ? 'orange' : 'gray.300'}
             />
         <Box as='span' ml='2' color='gray.600' fontSize='sm'>
-          x likes
+          ... likes
         </Box>
         
       </Box>
@@ -114,46 +162,19 @@ function postDetail(props) {
           placeholder="add comment..."
           variant="outline"
           mb="10px"
-          bg="gray.50">
+          bg="gray.50"
+          value={phrase}
+          onChange={(event) => setPhrase(event.target.value)}
+          >
+          
           </Input>
           <Button mx={3}
             variant={"outline"} fontSize={"small"} colorScheme="teal" alignItems="center" height="4vh" width="14vh" 
+              onClick={onComment} 
               >
               Post comment
             </Button>
-  <Box fontSize={"md"} bg={"teal.100"} width={400} height={70} p={3} my={3} rounded={10}>
-  <Box display='flex' alignItems='baseline'>
-      <Badge fontSize={"xx-small"} borderRadius='md' px='2' colorScheme='teal'>
-          comment by commenter
-        </Badge>
-        <Box
-          color='gray.500'
-          letterSpacing='normal'
-          fontSize='small'
-          ml='2'
-        >
-         created at &bull; timetimetime
-        </Box>
-      </Box>
-    test this is a comment
-  </Box>
-      {/* space */}
-  <Box fontSize={"md"} bg={"teal.100"} width={400} height={70} p={3} my={3} rounded={10}>
-  <Box display='flex' alignItems='baseline'>
-      <Badge fontSize={"xx-small"} borderRadius='md' px='2' colorScheme='teal'>
-          comment by commenter
-        </Badge>
-        <Box
-          color='gray.500'
-          letterSpacing='normal'
-          fontSize='small'
-          ml='2'
-        >
-         created at &bull; timetimetime
-        </Box>
-      </Box>
-    test this is a comment
-  </Box>
+  {mappedComments}
   </Box>
   
    
@@ -221,11 +242,12 @@ export async function getServerSideProps(context) {
     const user_id = session.user.user_id;
     const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
     const postRes = await axiosInstance.get(`/posts/getPost/${post_id}`, config);
+    const commentRes = await axiosInstance.get(`/comments/${post_id}`, config)
+    console.log(commentRes.data.data)
 
     return {
       props: {user: res.data.data.result, 
-        post: postRes.data.data, poster: 
-        postRes.data.resGetPoster, session},
+        post: postRes.data.data, poster: postRes.data.resGetPoster, comment: commentRes.data.data ,session},
     };
   } catch (error) {
     console.log({error});

@@ -29,7 +29,7 @@ export default function Home(props) {
     const createdAt = post.createdAt
     const slicedCreatedAt = createdAt.slice(0,10)
     const postId = post.post_id
-    // key={postId} href={`/postdetail/${postId}'}
+    
     return (
         <Link mt={6} key={postId} href={`/postdetail/${postId}`}>
         <Box as='button' bg={"gray.100"} alignContent={"center"} alignItems={"center"} boxShadow={"2xl"}
@@ -117,8 +117,6 @@ export default function Home(props) {
         setPreview(null)
       }
     }
-  
-  
 
   return (
     <VStack spacing='18px'>
@@ -195,7 +193,8 @@ export async function getServerSideProps(context) {
     const postRes = await axiosInstance.get(`/posts`);
 
     return {
-      props: {user: res.data.data.result, allPosts: postRes.data.data, session},
+      props: {user: res.data.data.result, 
+        allPosts: postRes.data.data, session},
     };
   } catch (error) {
     console.log({error});
