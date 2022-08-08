@@ -24,8 +24,6 @@ function postDetail(props) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
 
-  console.log(post, poster)
-
   useEffect(() => {
     const {user_id} = props.session.user
     if (user_id == post.user_id){
@@ -63,7 +61,6 @@ function postDetail(props) {
     
 
     const createdAt = post.createdAt
-    console.log(createdAt)
     const slicedCreatedAt = createdAt.slice(0,10)
     const addressAPI = "http://localhost:2105"
     const addressImage = addressAPI.concat(`${post.image}`)
@@ -132,7 +129,7 @@ function postDetail(props) {
   <>
   
   <Button mx={3} my={1}
-            variant={"outline"} colorScheme="teal" alignItems="center" height="4vh" width="20vh" 
+            variant={"outline"} colorScheme="teal" alignItems="center" height="4vh" width="16vh" 
             onClick={onOpen} >
               Edit Post
             </Button>
@@ -189,7 +186,6 @@ export async function getServerSideProps(context) {
     };
 
     const user_id = session.user.user_id;
-   // console.log({user_id})
     const res = await axiosInstance.get(`/users/profile/${user_id}`, config);
     const postRes = await axiosInstance.get(`/posts/getPost/${post_id}`, config);
 

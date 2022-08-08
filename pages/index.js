@@ -1,5 +1,5 @@
-import { Input, Button, Flex, Box, Tag, TagLeftIcon, TagLabel, Text, Link, VStack, Badge, HStack, Spacer
-,Stack, Image, Alert, AlertIcon } from '@chakra-ui/react'
+import { Input, Button, Flex, Box, Tag, TagLeftIcon, TagLabel, Text, Link, VStack, Badge,
+Stack, Image, Alert, AlertIcon } from '@chakra-ui/react'
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import styles from '../styles/Home.module.css'
@@ -75,14 +75,12 @@ export default function Home(props) {
     )
   }
   const [] = allPosts;
-  //const mappedPosts = testPosts.map(renderPosts)
   const mappedPosts = allPosts.map(renderPosts)
   
   async function getSessionAsync(){
     const session = await getSession()
     setSession(true)
     if(!session) { router.replace("/login") }  
-    console.log({session});
     }
     useEffect(() => {
     getSessionAsync()  
@@ -99,19 +97,14 @@ export default function Home(props) {
         const session = await getSession();
 
         const {accesstoken} = session.user;
-        console.log(session)
         const user_id = session.user.user_id;
         const body = new FormData();
         body.append("image", image);
         body.append("caption", caption);
         body.append("user_id", user_id);
-        // const body = {
-        //   caption, image, user_id: session.user.user_id
-        // }
         const config = {
           headers: {Authorization: `Bearer ${accesstoken}`},
         };
-        console.log(image, caption, user_id)
           const res = await axiosInstance.post("/posts", body, config);
           alert(res.data.message)
           window.location.reload();
